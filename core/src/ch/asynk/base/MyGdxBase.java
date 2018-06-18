@@ -1,33 +1,55 @@
 package ch.asynk.base;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ch.asynk.base.game.GameScreen;
 
-public class MyGdxBase extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
-	}
+public class MyGdxBase extends Game
+{
+    public static final String DOM = "MyGdx";
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
-	}
+    private enum State
+    {
+        NONE,
+        GAME
+    }
+    private State state;
+
+    @Override public void create()
+    {
+        this.state = State.NONE;
+        Gdx.app.setLogLevel(Gdx.app.LOG_DEBUG);
+        debug(String.format("create() [%d;%d] %f", Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDensity()));
+        switchToGame();
+    }
+
+    @Override public void dispose()
+    {
+        getScreen().dispose();
+        this.state = State.NONE;
+    }
+
+    public static void error(String msg)
+    {
+        Gdx.app.error(DOM, msg);
+    }
+
+    public static void debug(String msg)
+    {
+        Gdx.app.debug(DOM, msg);
+    }
+
+    public static void debug(String from, String msg)
+    {
+        Gdx.app.debug(DOM, String.format("%s : %s", from, msg));
+    }
+
+    public void switchToGame()
+    {
+        if (state != State.NONE) {
+            getScreen().dispose();
+        }
+        setScreen(new GameScreen(this));
+        this.state = State.GAME;
+    }
 }
