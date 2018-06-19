@@ -2,7 +2,7 @@ package ch.asynk.base;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import ch.asynk.base.game.GameScreen;
+import ch.asynk.base.screens.GameScreen;
 
 public class MyGdxBase extends Game
 {

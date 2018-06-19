@@ -1,4 +1,4 @@
-package ch.asynk.base.game;
+package ch.asynk.base.cameras;
 
 import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,14 +8,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 
-public class GameCamera extends OrthographicCamera
+public class BoardCamera extends OrthographicCamera
 {
     private static final float ZEROF = 0.01f;
 
     private int padding;
-    private float worldWidth;
-    private float worldHeight;
-    private float worldAspectRatio;
+    private float boardWidth;
+    private float boardHeight;
+    private float boardAspectRatio;
     private float zoomMax;
     private float zoomMin;
     private int screenWidth;
@@ -31,13 +31,13 @@ public class GameCamera extends OrthographicCamera
     private int hudBottom;
     private boolean fullHud;
 
-    public GameCamera(int padding, float worldWidth, float worldHeight, float zoomMax, float zoomMin, boolean fullHud)
+    public BoardCamera(int padding, float boardWidth, float boardHeight, float zoomMax, float zoomMin, boolean fullHud)
     {
-        super(worldWidth, worldHeight);
-        this.worldWidth = worldWidth;
-        this.worldHeight = worldHeight;
+        super(boardWidth, boardHeight);
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
         this.padding = padding;
-        this.worldAspectRatio = (worldWidth / worldHeight);
+        this.boardAspectRatio = (boardWidth / boardHeight);
         this.zoomMax = zoomMax;
         this.zoomMin = zoomMin;
         this.viewport = new Rectangle();
@@ -56,16 +56,16 @@ public class GameCamera extends OrthographicCamera
         float screenAvailableWidth = screenWidth - (2 * padding);
         float screenAvailableHeight = screenHeight - (2 * padding);
         float screenAspectRatio = (screenWidth / (float) screenHeight);
-        float diff = (worldAspectRatio - screenAspectRatio);
+        float diff = (boardAspectRatio - screenAspectRatio);
 
         if (diff <= -ZEROF) {
-            // screen wider than world : use max height, width grows up until max available on zooming
+            // screen wider than board : use max height, width grows up until max available on zooming
             viewport.height = screenAvailableHeight;
-            viewport.width = java.lang.Math.min((screenAvailableHeight * worldAspectRatio /  zoom), screenAvailableWidth);
+            viewport.width = java.lang.Math.min((screenAvailableHeight * boardAspectRatio /  zoom), screenAvailableWidth);
             viewport.x = padding + ((screenAvailableWidth - viewport.width) / 2f);
             viewport.y = padding;
             // camera aspect ratio must follow viewport aspect ration
-            viewportHeight = worldHeight;
+            viewportHeight = boardHeight;
             viewportWidth = (viewportHeight * (viewport.width / viewport.height));
             // hud
             hud.y = 0;
@@ -73,11 +73,11 @@ public class GameCamera extends OrthographicCamera
         } else if (diff > ZEROF) {
             // word is wider than screen : use max width, height grows up until max available on zooming
             viewport.width = screenAvailableWidth;
-            viewport.height = java.lang.Math.min((screenAvailableWidth / worldAspectRatio / zoom), screenAvailableHeight);
+            viewport.height = java.lang.Math.min((screenAvailableWidth / boardAspectRatio / zoom), screenAvailableHeight);
             viewport.y = padding + ((screenAvailableHeight - viewport.height) / 2f);
             viewport.x = padding;
             // camera aspect ratio must follow viewport aspect ration
-            viewportWidth = worldWidth;
+            viewportWidth = boardWidth;
             viewportHeight = (viewportWidth * (viewport.height / viewport.width));
             // hud
             hud.x = 0;
@@ -121,7 +121,7 @@ public class GameCamera extends OrthographicCamera
 
     public void centerOnWorld()
     {
-        position.set((worldWidth / 2f), (worldHeight / 2f), 0f);
+        position.set((boardWidth / 2f), (boardHeight / 2f), 0f);
     }
 
     public void zoom(float dz)
@@ -150,20 +150,20 @@ public class GameCamera extends OrthographicCamera
         float cameraWidth = (viewportWidth * zoom);
         float cameraHeight = (viewportHeight * zoom);
 
-        // on each axis, clamp on [ cameraDim/2 ; worldDim - cameraDim/2 ]
+        // on each axis, clamp on [ cameraDim/2 ; boardDim - cameraDim/2 ]
 
-        if ((worldWidth - cameraWidth) > ZEROF) {
+        if ((boardWidth - cameraWidth) > ZEROF) {
             cameraWidth /= 2f;
-            position.x = MathUtils.clamp(position.x, cameraWidth, (worldWidth - cameraWidth));
+            position.x = MathUtils.clamp(position.x, cameraWidth, (boardWidth - cameraWidth));
         } else {
-            position.x = (worldWidth / 2f);
+            position.x = (boardWidth / 2f);
         }
 
-        if ((worldHeight - cameraHeight) > ZEROF) {
+        if ((boardHeight - cameraHeight) > ZEROF) {
             cameraHeight /= 2f;
-            position.y = MathUtils.clamp(position.y, cameraHeight, (worldHeight - cameraHeight));
+            position.y = MathUtils.clamp(position.y, cameraHeight, (boardHeight - cameraHeight));
         } else {
-            position.y = (worldHeight / 2f);
+            position.y = (boardHeight / 2f);
         }
     }
 

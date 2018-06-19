@@ -1,4 +1,4 @@
-package ch.asynk.base.game;
+package ch.asynk.base.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import ch.asynk.base.MyGdxBase;
+import ch.asynk.base.cameras.BoardCamera;
 
 public class GameScreen implements Screen
 {
@@ -26,7 +27,7 @@ public class GameScreen implements Screen
     private final Texture map;
     private final Texture hud;
 
-    private GameCamera camera;
+    private BoardCamera camera;
     private Vector2 dragPos = new Vector2();
     private Vector3 mapTouch = new Vector3();
     private Vector3 hudTouch = new Vector3();
@@ -41,7 +42,7 @@ public class GameScreen implements Screen
         this.batch = new SpriteBatch();
         this.hud = new Texture("hud.png");
         this.map = new Texture("map_00.png");
-        this.camera = new GameCamera(10, map.getWidth(), map.getHeight(), 1.0f, 0.3f, false);
+        this.camera = new BoardCamera(10, map.getWidth(), map.getHeight(), 1.0f, 0.3f, false);
         Gdx.input.setInputProcessor(getMultiplexer());
         this.paused = false;
         this.inputDelay = 0f;
