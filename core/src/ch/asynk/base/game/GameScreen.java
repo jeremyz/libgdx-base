@@ -24,10 +24,12 @@ public class GameScreen implements Screen
     private final MyGdxBase base;
     private final SpriteBatch batch;
     private final Texture map;
+    private final Texture hud;
 
     private GameCamera camera;
     private Vector2 dragPos = new Vector2();
     private Vector3 mapTouch = new Vector3();
+    private Vector3 hudTouch = new Vector3();
 
     private boolean paused;
     private float inputDelay;
@@ -37,8 +39,9 @@ public class GameScreen implements Screen
     {
         this.base = base;
         this.batch = new SpriteBatch();
+        this.hud = new Texture("hud.png");
         this.map = new Texture("map_00.png");
-        this.camera = new GameCamera(10, map.getWidth(), map.getHeight(), 1.0f, 0.3f);
+        this.camera = new GameCamera(10, map.getWidth(), map.getHeight(), 1.0f, 0.3f, false);
         Gdx.input.setInputProcessor(getMultiplexer());
         this.paused = false;
         this.inputDelay = 0f;
@@ -63,6 +66,17 @@ public class GameScreen implements Screen
         batch.begin();
         batch.draw(map, 0, 0);
         batch.end();
+
+        camera.applyHudViewport();
+        batch.setProjectionMatrix(camera.getHudMatrix());
+        batch.begin();
+        int right = camera.getHudLeft() + camera.getHudWidth() - hud.getWidth();
+        int top = camera.getHudBottom() + camera.getHudHeight() - hud.getHeight();
+        batch.draw(hud, 0, 0);
+        batch.draw(hud, right, 0);
+        batch.draw(hud, 0, top);
+        batch.draw(hud, right, top);
+        batch.end();
     }
 
     @Override public void resize(int width, int height)
@@ -77,6 +91,7 @@ public class GameScreen implements Screen
         MyGdxBase.debug("GameScreen", "dispose()");
         batch.dispose();
         map.dispose();
+        hud.dispose();
     }
 
     @Override public void show()
@@ -117,7 +132,9 @@ public class GameScreen implements Screen
                 if (button == Input.Buttons.LEFT) {
                     dragPos.set(x, y);
                     camera.unproject(x, y, mapTouch);
-                    MyGdxBase.debug("touchDown : " + mapTouch);
+                    camera.unprojectHud(x, y, hudTouch);
+                    MyGdxBase.debug("touchDown MAP : " + mapTouch);
+                    MyGdxBase.debug("touchDown HUD : " + hudTouch);
                 }
                 return true;
             }
