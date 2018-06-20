@@ -40,8 +40,8 @@ public class GameScreen implements Screen
     {
         this.base = base;
         this.batch = new SpriteBatch();
-        this.hud = new Texture("hud.png");
-        this.map = new Texture("map_00.png");
+        this.hud = new Texture("data/hud.png");
+        this.map = new Texture("data/map_00.png");
         this.camera = new BoardCamera(10, map.getWidth(), map.getHeight(), 1.0f, 0.3f, false);
         Gdx.input.setInputProcessor(getMultiplexer());
         this.paused = false;

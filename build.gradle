@@ -91,6 +91,10 @@ project(":core") {
     }
 }
 
+project(":assets") {
+    configurations { texturePacker }
+}
+
 tasks.eclipse.doLast {
     delete ".project"
 }
